@@ -14,7 +14,7 @@
 //
 // PROVIDED functions: index_find, index_remove, index_status
 // TODO functions:     index_load, index_save, index_add
-
+#include <errno.h>
 #include "index.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,6 +23,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <dirent.h>
+int object_write(ObjectType type, const void *data, size_t len, ObjectID *id_out);
 
 // ─── PROVIDED ────────────────────────────────────────────────────────────────
 
@@ -225,7 +226,7 @@ int index_add(Index *index, const char *path) {
     fseek(f, 0, SEEK_SET);
     if (file_size < 0) { fclose(f); return -1; }
 
-    void *contents = malloc((size_t)file_size + 1);
+    void *contents = malloc((size_t)file_size);
     if (!contents) { fclose(f); return -1; }
     size_t nread = fread(contents, 1, (size_t)file_size, f);
     fclose(f);
