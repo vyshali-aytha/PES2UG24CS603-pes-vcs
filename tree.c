@@ -132,6 +132,13 @@ int tree_serialize(const Tree *tree, void **data_out, size_t *len_out) {
 static int write_tree_level(...) {
     Tree tree;
     tree.count = 0;
+    if (!slash) {
+    TreeEntry *te = &tree.entries[tree.count++];
+    te->mode = entries[i]->mode;
+    te->hash = entries[i]->hash;
+    snprintf(te->name, sizeof(te->name), "%s", rel);
+    i++;
+    }
     return 0;
 }
 int tree_from_index(ObjectID *id_out) {
