@@ -132,6 +132,11 @@ int tree_serialize(const Tree *tree, void **data_out, size_t *len_out) {
 static int write_tree_level(...) {
     Tree tree;
     tree.count = 0;
+    int i = 0;
+    while (i < count) {
+        const char *rel = entries[i]->path + strlen(prefix); // path relative to this level
+        const char *slash = strchr(rel, '/');
+
     if (!slash) {
     TreeEntry *te = &tree.entries[tree.count++];
     te->mode = entries[i]->mode;
@@ -156,7 +161,17 @@ static int write_tree_level(...) {
             while (j < count && strncmp(entries[j]->path + strlen(prefix), rel, dir_len + 1) == 0) {
                 j++;
             }
+            ObjectID sub_tree_id;
+            if (write_tree_level(entries + i, j - i, sub_prefix, &sub_tree_id) != 0) return -1;
+
+            TreeEntry *te = &tree.entries[tree.count++];
+            te->mode = 0040000;
+            te->hash = sub_tree_id;
+            snprintf(te->name, sizeof(te->name), "%s", dir_name);
+
+            i = j;
        }
+    }
     return 0;
 }
 int tree_from_index(ObjectID *id_out) {
