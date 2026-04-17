@@ -196,6 +196,6 @@ int head_update(const ObjectID *new_commit) {
 int commit_create(const char *message, ObjectID *commit_id_out) {
     // TODO: Implement commit creation
     // (See Lab Appendix for logical steps)
-    (void)message; (void)commit_id_out;
-    return -1;
+   Commit c;
+memset(&c, 0, sizeof(c));
 }
