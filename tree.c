@@ -139,6 +139,24 @@ static int write_tree_level(...) {
     snprintf(te->name, sizeof(te->name), "%s", rel);
     i++;
     }
+    else {
+            // It's a subdirectory — group all entries with the same first component
+            size_t dir_len = (size_t)(slash - rel);
+            char dir_name[256];
+            if (dir_len >= sizeof(dir_name)) return -1;
+            memcpy(dir_name, rel, dir_len);
+            dir_name[dir_len] = '\0';
+
+            // Build new prefix for recursive call
+            char sub_prefix[512];
+            snprintf(sub_prefix, sizeof(sub_prefix), "%s%s/", prefix, dir_name);
+
+            // Collect all entries that share this subdirectory
+            int j = i;
+            while (j < count && strncmp(entries[j]->path + strlen(prefix), rel, dir_len + 1) == 0) {
+                j++;
+            }
+       }
     return 0;
 }
 int tree_from_index(ObjectID *id_out) {
