@@ -196,7 +196,7 @@ int object_read(const ObjectID *id, ObjectType *type_out, void **data_out, size_
     char path[512];
     object_path(id, path, sizeof(path));
 
-    // 2. Open and read entire file
+    // 2. Open and read the  entire file
     FILE *f = fopen(path, "rb");
     if (!f) return -1;
 
